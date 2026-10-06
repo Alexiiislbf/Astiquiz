@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ASTI'QUIZ CDU/CDP V6 Mobile — By@DELORME</title>
+<style>
+:root{
+  --bg:#f3f6fa;--card:#fff;--ink:#172033;--muted:#667085;--line:#d7e0ea;
+  --navy:#17365d;--blue:#245d8f;--green:#168348;--green2:#22c55e;
+  --orange:#f59e0b;--red:#b42318;--soft:#eef4f9;--purple:#6d5bd0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+.wrap{max-width:1160px;margin:auto;padding:18px}
+header{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:14px}
+.mark{width:68px;height:68px;border-radius:18px;background:var(--navy);display:grid;place-items:center;color:#fff;font-weight:900;font-size:24px;letter-spacing:.5px}
+h1{margin:0;color:var(--navy);font-size:27px}
+.subtitle{margin-top:3px;color:var(--muted);font-size:13px}
+.controls{display:flex;align-items:end;gap:9px;flex-wrap:wrap}
+.field label{display:block;font-size:11px;color:var(--muted);font-weight:800;margin:0 0 4px}
+select,button{font:inherit}
+select{min-height:43px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 11px;max-width:280px}
+button{min-height:44px;border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}
+button:disabled{opacity:.42;cursor:not-allowed}
+.primary{background:var(--navy);color:#fff}.secondary{background:#e9eef5;color:var(--navy)}
+.validate{background:var(--orange);color:#1f2937}.next{background:var(--blue);color:#fff}
+.card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:16px}
+.meta{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.leftmeta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{background:#e7edf5;color:var(--navy);font-size:12px;font-weight:900;padding:6px 9px;border-radius:999px}
+.priority{background:#fff2cc;color:#7c4b00}
+.counter{color:var(--muted);font-size:13px}
+.question{font-size:22px;font-weight:850;line-height:1.32;margin:16px 0 12px}
+.help{font-size:12px;color:var(--muted);margin-bottom:9px}
+.answers{display:grid;gap:8px}
+.choice{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 11px;background:#fbfcfe}
+.choice input{margin-top:2px;width:18px;height:18px;flex:0 0 auto}
+.choice.correct{background:#eaf8ef;border-color:#8fd2a6}.choice.wrong{background:#fff0ef;border-color:#e8aaa3}
+.choice.missed{background:#f1fbf4;border:2px dashed #69ba85}
+.choiceText{line-height:1.35}
+.matchgrid{display:grid;gap:9px}
+.matchrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,300px);gap:10px;align-items:center;border:1px solid var(--line);padding:10px;border-radius:10px;background:#fbfcfe}
+.matchrow.goodrow{background:#eaf8ef;border-color:#8fd2a6}.matchrow.badrow{background:#fff0ef;border-color:#e8aaa3}
+.matchrow select{width:100%;max-width:none}
+.ordergrid{display:grid;gap:8px}
+.orderrow{display:grid;grid-template-columns:74px minmax(0,1fr);gap:10px;align-items:center;border:1px solid var(--line);padding:9px 10px;border-radius:10px;background:#fbfcfe}
+.orderrow.goodrow{background:#eaf8ef;border-color:#8fd2a6}.orderrow.badrow{background:#fff0ef;border-color:#e8aaa3}
+.correction{display:none;margin-top:15px;border-left:5px solid var(--orange);background:#fff7e8;border-radius:9px;padding:14px}
+.correction.visible{display:block}
+.correction h3{margin:0 0 7px;color:#8a4d00;font-size:14px}
+.official{font-size:17px;font-weight:800;line-height:1.4}
+.mnemo,.trap,.partiel{margin-top:9px;padding:9px 11px;border-radius:8px;font-size:13px}
+.mnemo{background:#eaf6ee;color:#14532d}.trap{background:#fff1f0;color:#8a1c14}
+.partiel{background:#eef3ff;color:#3446a8}
+.actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:15px}
+.actionright{display:flex;gap:8px;flex-wrap:wrap}
+.progressBlock{margin-top:13px}
+.progressLabel{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
+.track{height:9px;background:#e7edf4;border-radius:999px;overflow:hidden;margin-top:5px}
+.fill{height:100%;width:0;transition:width .2s;background:var(--blue)}
+.goodfill{background:linear-gradient(90deg,#16a34a,#22c55e)}
+.result{display:none;margin-top:15px;background:#eef6ff;border:1px solid #cbdff4;border-radius:12px;padding:16px}
+.result.visible{display:block}.bigscore{font-size:34px;font-weight:900;color:var(--navy)}
+.enc{font-size:18px;font-weight:850;margin-top:4px}.resultdetail{font-size:13px;color:var(--muted);margin-top:6px}
+.reviewPanel{display:none;margin-top:15px}.reviewPanel.visible{display:block}
+.reviewItem{border:1px solid #efc6c2;background:#fff5f4;border-radius:10px;padding:11px;margin-top:8px}
+.reviewQ{font-weight:800}.reviewA{margin-top:6px;color:#4b5563;font-size:13px;line-height:1.4}
+.footer{text-align:right;color:var(--muted);font-size:12px;font-weight:800;margin-top:11px}
+.badgeMode{background:#ece9ff;color:#4c3ca0}
+.source{font-size:11px;color:#7a8699;margin-top:8px}
+@media(max-width:700px){
+ .wrap{padding:10px}.mark{width:55px;height:55px;font-size:20px}h1{font-size:22px}.question{font-size:19px}
+ .matchrow{grid-template-columns:1fr}.actions button{flex:1}.actionright{width:100%}
+ .field{min-width:140px;flex:1}.field select{width:100%;max-width:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">
+    <div class="mark">AQ</div>
+    <div>
+      <h1>ASTI'QUIZ — CDU/CDP</h1>
+      <div class="subtitle">Révision hors connexion · Saint-Astier · QCM, associations et ordres · By@DELORME</div>
+    </div>
+  </div>
+  <div class="controls">
+    <div class="field">
+      <label for="mode">MODE</label>
+      <select id="mode">
+        <option value="learn">Apprentissage</option>
+        <option value="exam">Examen</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="module">MODULE</label>
+      <select id="module">
+        <option value="all">Tous les modules</option>
+        <option value="Principes généraux">Principes généraux</option>
+<option value="Environnement professionnel">Environnement professionnel</option>
+<option value="Emploi de la force au MOP">Emploi de la force au MOP</option>
+<option value="Commandement opérationnel">Commandement opérationnel</option>
+<option value="Mouvements élémentaires">Mouvements élémentaires</option>
+        <option value="review">Questions à revoir</option>
+      </select>
+    </div>
+    <div class="field" style="min-width:150px"><label>QUESTIONS DISPONIBLES</label><div id="availableCount" style="min-height:43px;display:flex;align-items:center;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fff;font-weight:900;color:var(--navy)">—</div></div>
+    <button id="start" class="primary" type="button">Nouvelle série</button>
+  </div>
+</header>
+
+
+<div style="margin-top:10px;padding:10px 12px;background:#eef6ff;border:1px solid #cbdff4;border-radius:9px;color:#344054;font-size:12px;line-height:1.45">
+  <strong>Fonctionnement V6 :</strong> le nombre de questions est déterminé automatiquement par le thème choisi.
+  Une question ne peut pas être validée sans réponse ; le bouton « Question suivante » ne devient actif qu'après validation. Pour les questions d’ordre (MOICP, 6J, DPIFA…), chaque numéro ne peut être utilisé qu’une seule fois.
+</div>
+
+<section class="card">
+  <div class="meta">
+    <div class="leftmeta">
+      <span id="modulePill" class="pill">PRÊT</span>
+      <span id="modePill" class="pill badgeMode">APPRENTISSAGE</span>
+      <span id="priorityPill" class="pill priority" style="display:none">PRIORITAIRE</span>
+    </div>
+    <div id="counter" class="counter">0 / 0</div>
+  </div>
+
+  <div id="question" class="question">Choisis un mode et lance une série.</div>
+  <div id="help" class="help"></div>
+  <div id="answers" class="answers"></div>
+  <div id="validationMessage" style="display:none;margin-top:10px;padding:10px 12px;border-radius:8px;background:#fff1f0;color:#8a1c14;font-size:13px;font-weight:800"></div>
+
+  <div id="correction" class="correction">
+    <h3>CORRECTION</h3>
+    <div id="expectedWrap" style="display:none;margin-bottom:10px">
+      <div style="font-weight:900;color:#17365d;margin-bottom:5px">RÉPONSES ATTENDUES</div>
+      <div id="expected"></div>
+    </div>
+    <div id="userFeedback" class="partiel" style="display:none"></div>
+    <div style="font-weight:900;color:#17365d;margin-top:10px;margin-bottom:5px">EXPLICATION</div>
+    <div id="official" class="official"></div>
+    <div id="partial" class="partiel" style="display:none"></div>
+    <div id="mnemo" class="mnemo" style="display:none"></div>
+    <div id="trap" class="trap" style="display:none"></div>
+    <div id="source" class="source"></div>
+  </div>
+
+  <div class="actions">
+    <div class="actionright" style="margin-left:auto">
+      <button id="validate" class="validate" type="button" disabled>Valider</button>
+      <button id="next" class="next" type="button" disabled>Question suivante</button>
+    </div>
+  </div>
+
+  <div class="progressBlock">
+    <div class="progressLabel"><span>Progression de la série</span><span id="sessionPct">0%</span></div>
+    <div class="track"><div id="sessionFill" class="fill"></div></div>
+  </div>
+  <div class="progressBlock">
+    <div class="progressLabel"><span>Bonnes réponses exactes</span><span id="goodPct">0%</span></div>
+    <div class="track"><div id="goodFill" class="fill goodfill"></div></div>
+  </div>
+
+  <div id="result" class="result">
+    <div id="bigScore" class="bigscore"></div>
+    <div id="enc" class="enc"></div>
+    <div id="resultDetail" class="resultdetail"></div>
+  </div>
+
+  <div id="reviewPanel" class="reviewPanel">
+    <strong>Revue des erreurs :</strong>
+    <div id="reviewList"></div>
+  </div>
+</section>
+
+
+<div style="margin-top:10px;padding:10px 12px;background:#eef6ff;border:1px solid #cbdff4;border-radius:9px;color:#344054;font-size:12px;line-height:1.4">
+  <strong>Mode Apprentissage :</strong> après chaque clic sur « Valider », ASTI'QUIZ affiche immédiatement les réponses attendues, ta réponse, l'explication, le mémo et le piège éventuel.
+  <br><strong>Mode Examen :</strong> aucune correction n'est dévoilée avant la fin de la série.
+</div>
+
+
+<div style="margin-top:10px;padding:10px 12px;background:#eef6ff;border:1px solid #cbdff4;border-radius:9px;color:#344054;font-size:12px;line-height:1.4">
+  <strong>Version mobile Android :</strong> le programme est entièrement contenu dans ce fichier.
+  Pour que les boutons fonctionnent, ouvrez le fichier avec <strong>Chrome, Edge ou Firefox</strong>, et non dans l’aperçu du gestionnaire de fichiers.
+</div>
+
+<div class="footer">ASTI'QUIZ CDU/CDP V6 Mobile · By@DELORME</div>
+</div>
+
+<script>
+
+var DATA = [{"id": 1, "module": "Principes généraux", "type": "multi", "prompt": "Que permet la distanciation de l’adversaire ?", "choices": [{"text": "Protéger les forces de l’ordre des projectiles lancés à la main.", "correct": true}, {"text": "Empêcher les manifestants de faire pression sur les forces de l’ordre.", "correct": true}, {"text": "Permettre à l’adversaire de se retirer à tout moment et limiter le contrôle des meneurs sur la foule.", "correct": true}, {"text": "Laisser le temps de la réflexion et de la réaction au commandement.", "correct": true}, {"text": "Éviter les confrontations physiques violentes et limiter l’emploi de la force.", "correct": true}, {"text": "Cloisonner l’espace de manœuvre.", "correct": false}, {"text": "Dégager des compartiments de terrain ou des points particuliers.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Les 5 effets à retenir sont : protection, diminution de la pression, possibilité de retrait, temps de réflexion/réaction et limitation des confrontations physiques.", "mnemo": "DISTANCE = protéger / dépressuriser / laisser sortir / gagner du temps / éviter le contact.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 2, "module": "Principes généraux", "type": "single", "prompt": "La distanciation de l’adversaire s’obtient uniquement par le mouvement et le feu.", "choices": [{"text": "VRAI", "correct": false}, {"text": "FAUX", "correct": true}], "rows": [], "options": [], "order": [], "answer": "FAUX. Elle peut aussi être obtenue par la négociation, les sécurités passives, les moyens de judiciarisation, les appuis et la manœuvre.", "mnemo": "Distanciation ≠ seulement mouvement + feu.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 3, "module": "Principes généraux", "type": "multi", "prompt": "Quelles forces constituent les forces de première catégorie ?", "choices": [{"text": "Gendarmerie départementale.", "correct": true}, {"text": "Garde républicaine.", "correct": true}, {"text": "Gendarmerie mobile.", "correct": false}, {"text": "Forces terrestres.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "1re catégorie : Gendarmerie départementale + Garde républicaine.", "mnemo": "1re = GD + Garde républicaine.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 4, "module": "Principes généraux", "type": "single", "prompt": "Quelles forces constituent les forces de deuxième catégorie ?", "choices": [{"text": "Gendarmerie mobile.", "correct": true}, {"text": "Gendarmerie départementale.", "correct": false}, {"text": "Garde républicaine.", "correct": false}, {"text": "Forces terrestres.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "2e catégorie : Gendarmerie mobile.", "mnemo": "2e = GM.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 5, "module": "Principes généraux", "type": "single", "prompt": "Le MOP recouvre deux natures d’engagement : maintien de l’ordre et rétablissement de l’ordre.", "choices": [{"text": "VRAI", "correct": false}, {"text": "FAUX", "correct": true}], "rows": [], "options": [], "order": [], "answer": "FAUX. Il recouvre 3 natures : maintien de l’ordre (MO), rétablissement de l’ordre (RO) et violences urbaines (VU).", "mnemo": "MOP = MO + RO + VU.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 6, "module": "Principes généraux", "type": "multi", "prompt": "Parmi les propositions suivantes, lesquelles caractérisent le maintien de l’ordre (MO) ?", "choices": [{"text": "Engagement de faible intensité.", "correct": true}, {"text": "Maintenir un ordre déjà établi.", "correct": true}, {"text": "Ensemble de mesures de prévention.", "correct": true}, {"text": "Déploiement préalable et dissuasif de la force publique.", "correct": true}, {"text": "Contrôler, filtrer ou restreindre la liberté de mouvement.", "correct": true}, {"text": "Garantir la viabilité des itinéraires.", "correct": true}, {"text": "Protéger des bâtiments publics.", "correct": true}, {"text": "Prévenir les troubles à l’ordre public.", "correct": true}, {"text": "Faire cesser des troubles dans un environnement particulièrement dégradé.", "correct": false}, {"text": "Engagement de haute intensité.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "MO = faible intensité + ordre déjà établi + prévention + déploiement préalable/dissuasif.", "mnemo": "MO = FAIBLE + PRÉVENIR + ORDRE ÉTABLI.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 7, "module": "Principes généraux", "type": "multi", "prompt": "Parmi les propositions suivantes, lesquelles caractérisent le rétablissement de l’ordre (RO) ?", "choices": [{"text": "Engagement de moyenne intensité.", "correct": true}, {"text": "Engagement de haute intensité.", "correct": true}, {"text": "Faire cesser les troubles à l’ordre public dans un environnement particulièrement dégradé.", "correct": true}, {"text": "Ensemble des mesures d’intervention.", "correct": true}, {"text": "Emploi de la force avec ou sans usage des armes à feu.", "correct": true}, {"text": "Engagement possible de moyens militaires spécifiques.", "correct": true}, {"text": "Maintenir un ordre déjà établi.", "correct": false}, {"text": "Ensemble des mesures de prévention.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "RO = moyenne/haute intensité + faire cesser les troubles + intervention + force avec ou sans armes.", "mnemo": "RO = MOYEN/HAUT + INTERVENIR + FAIRE CESSER.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 8, "module": "Principes généraux", "type": "single", "prompt": "L’EGM doit s’articuler au minimum autour de 5 éléments majeurs : contact, accompagnement, appui, couverture, réserve d’intervention.", "choices": [{"text": "VRAI", "correct": false}, {"text": "FAUX", "correct": true}], "rows": [], "options": [], "order": [], "answer": "FAUX. Les 4 éléments nécessaires sont : Contact, Appui, Couverture, Réserve d’intervention. L’accompagnement n’est pas permanent.", "mnemo": "EGM = CONTACT / APPUI / COUVERTURE / RÉSERVE.", "trap": "Accompagnement : seulement pour certaines actions et lorsque le terrain l’impose.", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 9, "module": "Principes généraux", "type": "multi", "prompt": "Quels sont les 4 éléments nécessaires à l’articulation d’un EGM au MOP ?", "choices": [{"text": "Contact.", "correct": true}, {"text": "Appui.", "correct": true}, {"text": "Couverture.", "correct": true}, {"text": "Réserve d’intervention.", "correct": true}, {"text": "Accompagnement.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Contact, Appui, Couverture, Réserve d’intervention.", "mnemo": "CACR = Contact / Appui / Couverture / Réserve.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 10, "module": "Principes généraux", "type": "multi", "prompt": "Quels sont les avantages significatifs de la manœuvre offensive ?", "choices": [{"text": "Le choix du moment et du lieu de l’opération.", "correct": true}, {"text": "La détermination des objectifs et des directions d’effort.", "correct": true}, {"text": "La maîtrise du rythme de l’action.", "correct": true}, {"text": "La valorisation du terrain.", "correct": false}, {"text": "L’affaiblissement de la dynamique adverse.", "correct": false}, {"text": "L’interdiction définitive de la conquête de l’objectif de l’adversaire.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Offensive : choix du moment/lieu, objectifs/directions d’effort, maîtrise du rythme.", "mnemo": "OFFENSIVE = MOMENT / OBJECTIF / RYTHME.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 11, "module": "Principes généraux", "type": "match", "prompt": "Associez chaque principe de manœuvre à sa définition.", "choices": [], "rows": [{"left": "Engager le juste volume utile tout en gardant une réserve.", "correct": "Économie des moyens"}, {"left": "Combiner simultanément les moyens en un lieu et un moment donnés.", "correct": "Concentration des efforts"}, {"left": "Garder l’ascendant et l’initiative sur l’adversaire.", "correct": "Liberté d’action"}, {"left": "Aménager le terrain et couvrir les points faibles.", "correct": "Valorisation"}, {"left": "Briser la dynamique adverse par arrêts et actions offensives locales.", "correct": "Affaiblissement"}, {"left": "Interdire définitivement à l’adversaire la conquête de son objectif.", "correct": "Arrêt"}], "options": ["Économie des moyens", "Concentration des efforts", "Liberté d’action", "Valorisation", "Affaiblissement", "Arrêt"], "order": [], "answer": "Économie / concentration / liberté / valorisation / affaiblissement / arrêt : savoir reconnaître le mot-clé de chaque définition.", "mnemo": "", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 12, "module": "Principes généraux", "type": "multi", "prompt": "Quelles propositions définissent la gradation de l’emploi de la force au MOP ?", "choices": [{"text": "L’usage des armes à feu est l’ultime recours de la force légale déployée.", "correct": true}, {"text": "L’emploi de la force est soumis aux exigences d’absolue nécessité et de proportionnalité.", "correct": true}, {"text": "Il doit être justifié au regard des violences exercées contre les représentants de la force publique.", "correct": true}, {"text": "Les mesures de contrainte doivent être limitées au strict nécessaire.", "correct": true}, {"text": "C’est l’aptitude à recourir à la force nécessaire de manière légitime, dans le respect des lois et règlements.", "correct": true}, {"text": "Les forces doivent pouvoir changer rapidement le mode d’action selon l’attitude de l’adversaire.", "correct": false}, {"text": "Il s’agit de maintenir le plus bas niveau d’intensité possible tout en gardant la capacité de faire face à une escalade.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Les deux dernières propositions relèvent de la réversibilité, pas de la gradation.", "mnemo": "GRADATION = légalité / nécessité / proportion / strict nécessaire / ultime recours.", "trap": "« Plus bas niveau d’intensité » = réversibilité.", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 13, "module": "Principes généraux", "type": "match", "prompt": "Associez les deux notions de réversibilité.", "choices": [], "rows": [{"left": "Passer d’une mission de MOP à une mission de sécurisation.", "correct": "Réversibilité missionnelle"}, {"left": "Rechercher la désescalade et cesser l’emploi de la force dès que les circonstances ne le justifient plus.", "correct": "Réversibilité de l’action"}], "options": ["Réversibilité missionnelle", "Réversibilité de l’action"], "order": [], "answer": "Missionnelle = changer de mission. Action = désescalader / adapter rapidement le mode d’action.", "mnemo": "MISSIONNELLE = mission ; ACTION = désescalade.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 14, "module": "Principes généraux", "type": "match", "prompt": "Associez le type d’action à la disposition sur le terrain.", "choices": [], "rows": [{"left": "Toutes les unités/éléments dans le même compartiment de terrain.", "correct": "Action centralisée"}, {"left": "Au moins une unité/un élément dans un compartiment distinct.", "correct": "Action décentralisée"}, {"left": "Deux groupes du même peloton dans deux secteurs du même compartiment avec soutien mutuel immédiat.", "correct": "Action déconcentrée"}], "options": ["Action centralisée", "Action décentralisée", "Action déconcentrée"], "order": [], "answer": "Même compartiment = centralisée ; compartiments distincts = décentralisée ; deux secteurs du même compartiment = déconcentrée.", "mnemo": "MÊME = centralisée ; DISTINCTS = décentralisée ; DEUX SECTEURS = déconcentrée.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 15, "module": "Principes généraux", "type": "multi", "prompt": "Quelles propositions correspondent au principe de sécabilité ?", "choices": [{"text": "Permet de n’employer qu’une demi-Unité de Force Mobile, soit deux pelotons pour les EGM.", "correct": true}, {"text": "Mise en œuvre sur accord DGGN/DOE/CNO et décision du commandant d’unité pour des missions ne présentant pas de risque de troubles à l’ordre public.", "correct": true}, {"text": "La sécabilité doit rester exceptionnelle.", "correct": true}, {"text": "Le commandant de la fraction conserve la liberté d’articuler et d’adapter son dispositif selon l’évolution de la mission.", "correct": true}, {"text": "Permet de n’employer qu’un seul peloton.", "correct": false}, {"text": "Le commandant d’unité décide seul pour une mission présentant un faible risque de troubles à l’ordre public.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Sécabilité = demi-UFM = 2 pelotons EGM ; exceptionnelle ; accord DGGN/DOE/CNO ; mission sans risque de troubles à l’ordre public.", "mnemo": "SÉCABILITÉ = DEMI-UFM = 2 PELOTONS.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 16, "module": "Principes généraux", "type": "single", "prompt": "Un groupement tactique gendarmerie (GTG) est constitué d’au moins 7 EGM.", "choices": [{"text": "VRAI", "correct": false}, {"text": "FAUX", "correct": true}], "rows": [], "options": [], "order": [], "answer": "FAUX. La correction officielle indique « plusieurs EGM », sans seuil de 7.", "mnemo": "GTG = plusieurs EGM.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 17, "module": "Principes généraux", "type": "single", "prompt": "Un groupement opérationnel de maintien de l’ordre (GOMO) est mis sur pied lorsque la mission nécessite l’engagement de plusieurs GTG.", "choices": [{"text": "VRAI", "correct": true}, {"text": "FAUX", "correct": false}], "rows": [], "options": [], "order": [], "answer": "VRAI.", "mnemo": "GOMO = plusieurs GTG.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 18, "module": "Principes généraux", "type": "multi", "prompt": "Dans quels cadres les UFM peuvent-elles être employées ?", "choices": [{"text": "À la suite de catastrophes ou calamités naturelles, technologiques ou sanitaires.", "correct": true}, {"text": "Lors de grands rassemblements ou événements.", "correct": true}, {"text": "En cas d’émeutes dans un quartier sensible et de risque de contagion.", "correct": true}, {"text": "En cas de risques d’attentats terroristes.", "correct": true}], "rows": [], "options": [], "order": [], "answer": "Les quatre propositions sont correctes.", "mnemo": "", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 19, "module": "Principes généraux", "type": "multi", "prompt": "Les techniques développées pour les missions de MOP visent essentiellement à…", "choices": [{"text": "Sécuriser l’espace de manœuvre ou protéger un point particulier.", "correct": true}, {"text": "Dégager des compartiments de terrain ou des points particuliers.", "correct": true}, {"text": "Interpeller les fauteurs de troubles et les délinquants.", "correct": true}, {"text": "Se protéger et riposter à une prise à partie par armes à feu.", "correct": true}], "rows": [], "options": [], "order": [], "answer": "Les quatre finalités sont correctes.", "mnemo": "", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 20, "module": "Environnement professionnel", "type": "match", "prompt": "Associez les adversaires potentiels à leurs caractéristiques.", "choices": [], "rows": [{"left": "Structures syndicales ; actions très violentes ; engins et moyens lourds.", "correct": "Professionnels"}, {"left": "Organisations structurées ; actions spectaculaires parfois violentes ; recherche d’effets médiatiques.", "correct": "Pacifistes, écologistes"}, {"left": "Mobilisation massive ; personnes peu habituées à manifester ; nombreux extrémistes/casseurs.", "correct": "Grands mouvements sociaux"}, {"left": "Logement, précarité, aides sociales ; occupations de locaux ou lieux ciblés.", "correct": "Associatifs"}, {"left": "Opposition à la mondialisation libérale ; grands sommets ; défilés et affrontements.", "correct": "Alter-mondialistes"}, {"left": "Occupation permanente d’un site contre de grands projets pour raisons environnementales.", "correct": "Zadistes"}], "options": ["Professionnels", "Pacifistes, écologistes", "Grands mouvements sociaux", "Associatifs", "Alter-mondialistes", "Zadistes"], "order": [], "answer": "Repères : syndicats/moyens lourds = professionnels ; médiatique = pacifistes/écologistes ; mobilisation massive = grands mouvements sociaux ; logement/précarité = associatifs ; mondialisation/sommets = alter-mondialistes ; occupation permanente = zadistes.", "mnemo": "", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 21, "module": "Environnement professionnel", "type": "match", "prompt": "Associez les menaces avérées à l’ordre public à leurs caractéristiques.", "choices": [], "rows": [{"left": "Jeunes mobiles ; razzias planifiées et destructrices ; montrer que l’État ne tient pas la rue.", "correct": "Casseurs"}, {"left": "Mouvements autonomistes ou séparatistes ; organisation logistique dans la lutte armée.", "correct": "Indépendantistes"}, {"left": "Maximum de victimes ; actes individuels ou collectifs ; stratégie de la terreur et du chaos.", "correct": "Terrorisme"}, {"left": "Anticapitalisme, antifascisme, altermondialisation ; logique insurrectionnelle.", "correct": "Ultra gauche"}, {"left": "Ultra-radicaux aguerris et organisés ; mobilité et changement de physionomie.", "correct": "Black-blocs"}, {"left": "Acteurs ou groupuscules isolés susceptibles de frapper certaines communautés.", "correct": "Ultra droite"}], "options": ["Casseurs", "Indépendantistes", "Terrorisme", "Ultra gauche", "Black-blocs", "Ultra droite"], "order": [], "answer": "Repères : razzias = casseurs ; séparatistes = indépendantistes ; terreur/chaos = terrorisme ; insurrection = ultra gauche ; mobilité/physionomie = black-blocs ; communautés = ultra droite.", "mnemo": "", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 22, "module": "Environnement professionnel", "type": "match", "prompt": "Associez les espaces de manœuvre au MOP.", "choices": [], "rows": [{"left": "Espace compartimenté et favorable à l’action des forces de l’ordre.", "correct": "Milieu urbain"}, {"left": "Espace parfaitement maîtrisé par l’adversaire, contexte souvent dégradé de violences urbaines.", "correct": "Milieu périurbain"}, {"left": "Espace étendu ; axes difficiles ; voies rares ou mal entretenues.", "correct": "Milieu rural"}, {"left": "Espace restreint et cloisonné, connu et maîtrisé par l’adversaire ; moyens FO limités.", "correct": "Milieu fermé"}], "options": ["Milieu urbain", "Milieu périurbain", "Milieu rural", "Milieu fermé"], "order": [], "answer": "Urbain = compartimenté ; périurbain = adversaire ; rural = étendu ; fermé = cloisonné.", "mnemo": "", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 23, "module": "Environnement professionnel", "type": "match", "prompt": "Associez les types de manifestations / rassemblements à leur définition.", "choices": [], "rows": [{"left": "Rassemblement statique ou mobile sur voie publique d’un groupe organisé exprimant collectivement une opinion.", "correct": "Manifestation"}, {"left": "Endroit clos ou d’accès restreint ; personnes désignées ; contrôle effectif des identités à l’entrée.", "correct": "Réunion privée"}, {"left": "Rassemblement organisé par des personnes privées dans un lieu non préalablement aménagé à cette fin.", "correct": "Rassemblement festif sur terrain privé"}, {"left": "Lieu public ; accès de toutes les personnes sans distinction ; public informé par affiches, presse, tracts…", "correct": "Réunion publique"}, {"left": "Rassemblement sur voie publique ou lieu public susceptible de troubler l’ordre public.", "correct": "Attroupement"}, {"left": "Groupement limité dans le temps pour entendre des idées/opinions ou se concerter pour défendre ses intérêts.", "correct": "Réunion"}], "options": ["Manifestation", "Réunion privée", "Rassemblement festif sur terrain privé", "Réunion publique", "Attroupement", "Réunion"], "order": [], "answer": "Le mot-clé « susceptible de troubler l’ordre public » correspond à l’attroupement.", "mnemo": "", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 24, "module": "Environnement professionnel", "type": "single", "prompt": "Constitue une manifestation tout rassemblement de personnes sur la voie publique ou dans un lieu public susceptible de troubler l’ordre public.", "choices": [{"text": "VRAI", "correct": false}, {"text": "FAUX", "correct": true}], "rows": [], "options": [], "order": [], "answer": "FAUX. C’est la définition de l’attroupement (article 431-3 du Code pénal).", "mnemo": "« Susceptible de troubler l’ordre public » = ATTRoupement.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 25, "module": "Emploi de la force au MOP", "type": "match", "prompt": "Associez le cadre juridique au titulaire de la responsabilité.", "choices": [], "rows": [{"left": "Article L.435-1 du CSI", "correct": "Tout personnel de la troupe"}, {"left": "Article L.211-9 alinéa 6 du CSI", "correct": "Commandant de la troupe"}, {"left": "Article L.211-9 alinéas 1 à 5 du CSI", "correct": "Autorité civile / autorité habilitée"}, {"left": "Articles 122-5 et 122-7 du Code pénal", "correct": "Tout personnel de la troupe"}], "options": ["Tout personnel de la troupe", "Commandant de la troupe", "Autorité civile / autorité habilitée"], "order": [], "answer": "L.211-9 al.1 à 5 = autorité ; al.6 = commandant ; réaction individuelle = tout personnel.", "mnemo": "1-5 = AUTORITÉ ; 6 = COMMANDANT.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 26, "module": "Emploi de la force au MOP", "type": "multi", "prompt": "Hors les deux cas de l’article L.211-9 alinéa 6, quelles conditions justifient l’emploi de la force au sens strict ?", "choices": [{"text": "Autorisation préalable des autorités habilitées, sans formalisme particulier.", "correct": true}, {"text": "Sommations réglementaires.", "correct": true}, {"text": "Ordre exprès, traçable et matérialisé.", "correct": false}, {"text": "Avertissements sans formalisme particulier à l’initiative du commandant.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Force au sens strict : autorisation préalable + sommations.", "mnemo": "SENS STRICT = AUTORISATION + SOMMATIONS.", "trap": "Ordre exprès traçable et matérialisé = usage des armes.", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 27, "module": "Emploi de la force au MOP", "type": "single", "prompt": "Après l’annonce, la 1re sommation et la dernière sommation, le LGGM 56 mm peut être utilisé immédiatement pour lancer des MP7.", "choices": [{"text": "VRAI", "correct": false}, {"text": "FAUX", "correct": true}], "rows": [], "options": [], "order": [], "answer": "FAUX. L’usage du LGGM 56 mm et de ses munitions est un usage des armes : la dernière sommation doit être réitérée.", "mnemo": "ARMES = DERNIÈRE SOMMATION RÉPÉTÉE.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 28, "module": "Emploi de la force au MOP", "type": "multi", "prompt": "Quelles conditions de L.211-9 alinéas 1 à 5 sont nécessaires pour justifier l’emploi de la force au MOP ?", "choices": [{"text": "Un attroupement est formé.", "correct": true}, {"text": "Une autorité habilitée décide sa dissipation.", "correct": true}, {"text": "Des sommations ont été prononcées.", "correct": true}, {"text": "Le rassemblement ne se dissipe pas.", "correct": true}], "rows": [], "options": [], "order": [], "answer": "Les 4 conditions sont nécessaires.", "mnemo": "A-D-S-N = Attroupement / Décision / Sommations / Ne se dissipe pas.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 29, "module": "Emploi de la force au MOP", "type": "order", "prompt": "Remettez dans l’ordre la séquence des sommations pour l’emploi de la force au sens strict.", "choices": [], "rows": [], "options": [], "order": ["Annonce : « Attention ! Attention ! Vous participez à un attroupement… »", "1re sommation : « Nous allons faire usage de la force… »", "Dernière sommation : « Nous allons faire usage de la force… »"], "answer": "Annonce → 1re sommation → dernière sommation. Si usage des armes : réitérer ensuite la dernière sommation.", "mnemo": "FORCE = annonce + 1re + dernière ; ARMES = dernière x2.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 30, "module": "Emploi de la force au MOP", "type": "single", "prompt": "Au MOP, la grenade GENL peut être employée dans le cadre d’un emploi de la force au sens strict décidé par l’autorité habilitée.", "choices": [{"text": "VRAI", "correct": false}, {"text": "FAUX", "correct": true}], "rows": [], "options": [], "order": [], "answer": "FAUX. La GENL relève de l’usage des armes.", "mnemo": "GENL = USAGE DES ARMES.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 31, "module": "Emploi de la force au MOP", "type": "match", "prompt": "Associez les situations au cadre juridique.", "choices": [], "rows": [{"left": "Initiative du CDU si violences/voies de fait contre les FO ou impossibilité de défendre autrement le terrain.", "correct": "L.211-9 alinéa 6 CSI"}, {"left": "Réaction individuelle en légitime défense ou état de nécessité.", "correct": "122-5 / 122-7 CP"}, {"left": "Ordre de l’autorité habilitée pour disperser un attroupement.", "correct": "L.211-9 alinéas 1 à 5 CSI"}, {"left": "Réaction individuelle en cas d’atteinte à la vie ou à l’intégrité physique.", "correct": "L.435-1, 1° CSI"}, {"left": "Cadre des violences urbaines.", "correct": "L.435-1 CSI"}, {"left": "Réaction individuelle en cas de périples meurtriers.", "correct": "L.435-1, 5° CSI"}], "options": ["L.211-9 alinéa 6 CSI", "122-5 / 122-7 CP", "L.211-9 alinéas 1 à 5 CSI", "L.435-1, 1° CSI", "L.435-1 CSI", "L.435-1, 5° CSI"], "order": [], "answer": "Savoir reconnaître les mots-clés : attroupement/autorité = 1-5 ; violences/terrain = 6 ; réaction individuelle = 122-5/122-7 ou L.435-1 selon le cas.", "mnemo": "", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 32, "module": "Emploi de la force au MOP", "type": "match", "prompt": "Associez chaque sujet à son article.", "choices": [], "rows": [{"left": "Formalisme des sommations.", "correct": "R.211-11"}, {"left": "Absolue nécessité et proportionnalité.", "correct": "R.211-13"}, {"left": "Ordre exprès d’usage des armes : matérialité et traçabilité.", "correct": "R.211-14"}, {"left": "Armes utilisables en application de L.211-9 al.1 à 5.", "correct": "R.211-16 + D.211-17"}, {"left": "Armes utilisables en application de L.211-9 al.6.", "correct": "R.211-18 + D.211-19"}, {"left": "Autorités habilitées à décider de l’emploi de la force après sommations.", "correct": "R.211-21"}, {"left": "Moyens militaires spécifiques de la Gendarmerie nationale.", "correct": "R.214-1 à R.214-3"}], "options": ["R.211-11", "R.211-13", "R.211-14", "R.211-16 + D.211-17", "R.211-18 + D.211-19", "R.211-21", "R.214-1 à R.214-3"], "order": [], "answer": "11 = sommations ; 13 = nécessité/proportion ; 14 = trace ; 16-17 = armes 1-5 ; 18-19 = armes al.6 ; 21 = autorités.", "mnemo": "11 PAROLES / 13 PRINCIPES / 14 TRACE / 16-17 AUTORITÉ / 18-19 COMMANDANT / 21 AUTORITÉS.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 33, "module": "Emploi de la force au MOP", "type": "single", "prompt": "Le terme « force » au MOP comprend l’emploi des armes à feu.", "choices": [{"text": "VRAI", "correct": true}, {"text": "FAUX", "correct": false}], "rows": [], "options": [], "order": [], "answer": "VRAI. « Force » est le terme générique : emploi de la force au sens strict + usage des armes à feu.", "mnemo": "FORCE générique = sens strict + armes.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 34, "module": "Emploi de la force au MOP", "type": "match", "prompt": "Classez les moyens entre « force au sens strict » et « usage des armes ».", "choices": [], "rows": [{"left": "Grenades à effet sonore S / ASSD / GL-304", "correct": "Usage des armes"}, {"left": "LGGM 56 mm", "correct": "Usage des armes"}, {"left": "CM6 / MP7 lancées au LGGM", "correct": "Usage des armes"}, {"left": "GM2L lancée au LGGM", "correct": "Usage des armes"}, {"left": "GENL à main", "correct": "Usage des armes"}, {"left": "CM6 / MP7 à main", "correct": "Force au sens strict"}, {"left": "Système de protection périphérique VIPG", "correct": "Force au sens strict"}, {"left": "Disperseur lacrymogène du VBRG", "correct": "Force au sens strict"}, {"left": "Engins lanceurs d’eau", "correct": "Force au sens strict"}], "options": ["Force au sens strict", "Usage des armes"], "order": [], "answer": "Lanceur / sonore / désencerclement = usage des armes ; CM6/MP7 à main + eau/VIPG/VBRG = force au sens strict.", "mnemo": "LANCEUR / SONORE / DÉSENCERCLEMENT = ARMES.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 35, "module": "Emploi de la force au MOP", "type": "multi", "prompt": "Quelles conditions permettent l’emploi de la force à l’initiative du commandant au titre de L.211-9 alinéa 6 ?", "choices": [{"text": "Violences ou voies de fait exercées contre les représentants de la force publique.", "correct": true}, {"text": "Impossibilité de défendre autrement le terrain occupé.", "correct": true}, {"text": "Sommations réglementaires obligatoires.", "correct": false}, {"text": "Ordre exprès préalable de l’autorité habilitée.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Alinéa 6 : violences/voies de fait OU impossibilité de défendre autrement le terrain.", "mnemo": "AL.6 = VIOLENCES OU TERRAIN.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 36, "module": "Emploi de la force au MOP", "type": "single", "prompt": "Sur ordre exprès de l’autorité, après sommations, le LBD 40 fait partie des moyens visés par R.211-16 et D.211-17.", "choices": [{"text": "VRAI", "correct": false}, {"text": "FAUX", "correct": true}], "rows": [], "options": [], "order": [], "answer": "FAUX. Le LBD 40 relève de R.211-18 / D.211-19 pour les cas de l’alinéa 6, sur décision du commandant de la force publique.", "mnemo": "LBD 40 = 18-19 = ALINÉA 6.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 37, "module": "Emploi de la force au MOP", "type": "single", "prompt": "Lorsqu’un emploi de la force au titre de l’alinéa 6 doit être renouvelé, le commandant doit, chaque fois que possible, procéder à un nouvel avertissement.", "choices": [{"text": "VRAI", "correct": true}, {"text": "FAUX", "correct": false}], "rows": [], "options": [], "order": [], "answer": "VRAI.", "mnemo": "RENOUVELER = renouveler l’avertissement.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 38, "module": "Emploi de la force au MOP", "type": "multi", "prompt": "Quels moyens permettent de matérialiser et tracer un ordre exprès d’usage des armes ?", "choices": [{"text": "Document écrit.", "correct": true}, {"text": "Enregistrement sonore.", "correct": true}, {"text": "Enregistrement vidéo.", "correct": true}, {"text": "Ordre donné uniquement de vive voix sans enregistrement.", "correct": false}, {"text": "Transmission radio non enregistrée.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "L’ordre exprès doit laisser une trace : écrit, son ou vidéo. La radio seule ne suffit que si elle est enregistrée.", "mnemo": "ARMES = LAISSER UNE TRACE.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 39, "module": "Emploi de la force au MOP", "type": "multi", "prompt": "Quelles conditions sont nécessaires pour l’usage des armes au titre de L.211-9 alinéas 1 à 5 ?", "choices": [{"text": "Ordre exprès de l’autorité habilitée.", "correct": true}, {"text": "Ordre traçable et matérialisé.", "correct": true}, {"text": "Sommations réglementaires.", "correct": true}, {"text": "Les moyens de la force au sens strict ne suffisent pas à maintenir à distance ou disperser le rassemblement.", "correct": true}, {"text": "Une simple autorisation non matérialisée suffit.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Usage des armes 1-5 : ordre exprès + trace + sommations + insuffisance des moyens de la force au sens strict.", "mnemo": "ARMES 1-5 = ORDRE / TRACE / SOMMATIONS / INSUFFISANCE.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 40, "module": "Emploi de la force au MOP", "type": "single", "prompt": "Le PIE peut être employé au MOP.", "choices": [{"text": "VRAI", "correct": false}, {"text": "FAUX", "correct": true}], "rows": [], "options": [], "order": [], "answer": "FAUX. La correction transmise indique que le PIE est interdit au MOP.", "mnemo": "PIE = INTERDIT AU MOP.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 41, "module": "Emploi de la force au MOP", "type": "single", "prompt": "La GM2L peut être utilisée comme grenade à main.", "choices": [{"text": "VRAI", "correct": false}, {"text": "FAUX", "correct": true}], "rows": [], "options": [], "order": [], "answer": "FAUX. La GM2L est lancée à partir d’un LGGM.", "mnemo": "GM2L = LGGM.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 42, "module": "Commandement opérationnel", "type": "match", "prompt": "Associez chaque situation à son cadre d’ordre.", "choices": [], "rows": [{"left": "Mission statique", "correct": "PMSPCP"}, {"left": "Mission dynamique", "correct": "MOICP"}, {"left": "Lancer de grenades", "correct": "PODO"}, {"left": "Ordre de mouvement", "correct": "DPIFA"}, {"left": "Tir au LGGM", "correct": "NNODO"}, {"left": "Tomber en garde", "correct": "ZMC"}, {"left": "Ordre simplifié", "correct": "OPAC"}], "options": ["PMSPCP", "MOICP", "PODO", "DPIFA", "NNODO", "ZMC", "OPAC"], "order": [], "answer": "Statique=PMSPCP ; dynamique=MOICP ; grenades=PODO ; mouvement=DPIFA ; tir LGGM=NNODO ; garde=ZMC ; simplifié=OPAC.", "mnemo": "", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 43, "module": "Commandement opérationnel", "type": "order", "prompt": "Remettez dans l’ordre le cadre MOICP d’une mission dynamique.", "choices": [], "rows": [], "options": [], "order": ["Mission", "Objectif", "Itinéraire", "Conduites à tenir", "Place du chef"], "answer": "MOICP = Mission – Objectif – Itinéraire – Conduites à tenir – Place du chef.", "mnemo": "DYNAMIQUE = MOICP.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 44, "module": "Commandement opérationnel", "type": "order", "prompt": "Remettez dans l’ordre le cadre PMSPCP d’une mission statique.", "choices": [], "rows": [], "options": [], "order": ["Position / point d’installation", "Mission", "Secteur de surveillance", "Point particulier", "Conduites à tenir", "Place du chef"], "answer": "PMSPCP = Position – Mission – Secteur – Point particulier – Conduites – Place du chef.", "mnemo": "STATIQUE = PMSPCP.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 45, "module": "Commandement opérationnel", "type": "order", "prompt": "Remettez dans l’ordre le cadre DPIFA d’un ordre de mouvement.", "choices": [], "rows": [], "options": [], "order": ["Direction", "Point à atteindre", "Itinéraire", "Formation", "Ambiance"], "answer": "DPIFA = Direction – Point à atteindre – Itinéraire – Formation – Ambiance.", "mnemo": "MOUVEMENT = DPIFA.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 46, "module": "Commandement opérationnel", "type": "match", "prompt": "Associez les lettres de TAMMUC.", "choices": [], "rows": [{"left": "T", "correct": "Terrain"}, {"left": "A", "correct": "Adversaire"}, {"left": "M1", "correct": "Mission"}, {"left": "M2", "correct": "Moyens"}, {"left": "U", "correct": "Urgence"}, {"left": "C", "correct": "Cadre légal"}], "options": ["Terrain", "Adversaire", "Mission", "Moyens", "Urgence", "Cadre légal"], "order": [], "answer": "TAMMUC = Terrain – Adversaire – Mission – Moyens – Urgence – Cadre légal.", "mnemo": "TAMMUC = JE RÉFLÉCHIS.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 47, "module": "Commandement opérationnel", "type": "multi", "prompt": "Quelles affirmations sont correctes à propos de TAMMUC ?", "choices": [{"text": "C’est une aide à la décision en cours d’action.", "correct": true}, {"text": "C’est une MRT simplifiée permettant la réflexion du chef dans un court délai.", "correct": true}, {"text": "Il permet de concevoir l’idée de manœuvre et d’articuler le dispositif.", "correct": true}, {"text": "C’est un cadre d’ordre simplifié.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "TAMMUC sert à réfléchir / décider, pas à constituer un cadre d’ordre simplifié.", "mnemo": "TAMMUC = JE RÉFLÉCHIS.", "trap": "Ne pas confondre avec OPAC.", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 48, "module": "Commandement opérationnel", "type": "match", "prompt": "Associez les lettres d’OPAC.", "choices": [], "rows": [{"left": "O", "correct": "Objectif"}, {"left": "P", "correct": "Position"}, {"left": "A", "correct": "Action"}, {"left": "C", "correct": "Conduites à tenir"}], "options": ["Objectif", "Position", "Action", "Conduites à tenir"], "order": [], "answer": "OPAC = Objectif – Position – Action – Conduites à tenir.", "mnemo": "OPAC = JE DONNE L’ORDRE.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 49, "module": "Commandement opérationnel", "type": "multi", "prompt": "Quelles affirmations sont correctes à propos d’OPAC ?", "choices": [{"text": "C’est un cadre d’ordre simplifié.", "correct": true}, {"text": "Il peut remplacer les cadres d’ordres de tir et de déplacement.", "correct": true}, {"text": "C’est une MRT simplifiée en cours d’action.", "correct": false}, {"text": "C’est une aide à la décision permettant la réflexion du chef dans un court délai.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "OPAC = cadre d’ordre simplifié. Ce n’est ni une MRT ni une aide à la décision.", "mnemo": "OPAC = JE DONNE L’ORDRE.", "trap": "TAMMUC = réflexion ; OPAC = ordre.", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 50, "module": "Commandement opérationnel", "type": "order", "prompt": "Remettez dans l’ordre le SMEPP en cours d’action.", "choices": [], "rows": [], "options": [], "order": ["Nouvelle situation", "Cadre légal", "Mission", "Articulation", "Répartition des missions", "Conduite à tenir", "Place du chef"], "answer": "En cours d’action, le canevas est conservé mais seuls les éléments nouveaux ou modifiés sont repris.", "mnemo": "NOUVEAU → LÉGAL → MISSION → ARTICULATION → MISSIONS → CONDUITE → CHEF.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 51, "module": "Commandement opérationnel", "type": "order", "prompt": "Remettez dans l’ordre les 6J du compte-rendu.", "choices": [], "rows": [], "options": [], "order": ["Je suis", "Je vois", "Je fais", "Je suis en mesure de", "Je propose", "Je demande"], "answer": "6J = Je suis – Je vois – Je fais – Je suis en mesure de – Je propose – Je demande.", "mnemo": "6J = 6 fois « JE ».", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 52, "module": "Commandement opérationnel", "type": "multi", "prompt": "Dans le 6J, « Je vois » comprend quels éléments ?", "choices": [{"text": "Position.", "correct": true}, {"text": "Nature.", "correct": true}, {"text": "Attitude.", "correct": true}, {"text": "Volume.", "correct": true}, {"text": "Moyens.", "correct": true}, {"text": "Mission.", "correct": false}, {"text": "Itinéraire.", "correct": false}, {"text": "Place du chef.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Je vois = Position – Nature – Attitude – Volume – Moyens (PNAVM).", "mnemo": "JE VOIS = PNAVM.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 53, "module": "Commandement opérationnel", "type": "order", "prompt": "Remettez dans l’ordre le cadre NNODO.", "choices": [], "rows": [], "options": [], "order": ["Nature", "Nombre et type", "Objectif", "Distance précise", "Ouverture du feu"], "answer": "NNODO = Nature – Nombre et type – Objectif – Distance – Ouverture du feu.", "mnemo": "TIR = NNODO.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 54, "module": "Mouvements élémentaires", "type": "match", "prompt": "Associez la situation au mouvement élémentaire.", "choices": [], "rows": [{"left": "Éloigner une foule hostile devenue trop pressante pour créer une zone libre devant les éléments au contact.", "correct": "Bond offensif"}, {"left": "Dégager un espace déterminé occupé par une foule non hostile.", "correct": "Vague de refoulement"}, {"left": "S’emparer d’un compartiment tenu ou dégager une foule hostile d’un espace occupé illégalement.", "correct": "Charge"}], "options": ["Bond offensif", "Vague de refoulement", "Charge"], "order": [], "answer": "Pressante = bond ; non hostile = vague ; hostile/terrain = charge.", "mnemo": "PRESSANTE = BOND / NON HOSTILE = VAGUE / HOSTILE-TERRAIN = CHARGE.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 55, "module": "Mouvements élémentaires", "type": "multi", "prompt": "Quels éléments composent une vague de refoulement ?", "choices": [{"text": "Élément de contact.", "correct": true}, {"text": "Élément d’accompagnement.", "correct": true}, {"text": "Élément de sûreté.", "correct": true}, {"text": "Élément de réserve.", "correct": true}, {"text": "Élément de contrôle.", "correct": false}, {"text": "Élément de soutien.", "correct": false}, {"text": "Élément d’appui.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Vague = Contact – Accompagnement – Sûreté – Réserve.", "mnemo": "VAGUE = CASR.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 56, "module": "Mouvements élémentaires", "type": "multi", "prompt": "Quels éléments composent une charge ?", "choices": [{"text": "Élément de contact.", "correct": true}, {"text": "Élément d’accompagnement.", "correct": true}, {"text": "Élément de sûreté.", "correct": true}, {"text": "Élément d’appui.", "correct": true}, {"text": "Élément de réserve.", "correct": true}, {"text": "Élément de contrôle.", "correct": false}, {"text": "Élément de soutien.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Charge = Contact – Accompagnement – Appui – Sûreté – Réserve.", "mnemo": "CHARGE = CASR + APPUI.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 57, "module": "Mouvements élémentaires", "type": "multi", "prompt": "Quels éléments composent un bond offensif ?", "choices": [{"text": "Élément de contact.", "correct": true}, {"text": "Élément de sûreté.", "correct": true}, {"text": "Élément d’appui.", "correct": true}, {"text": "Élément de réserve.", "correct": true}, {"text": "Élément d’accompagnement si le terrain l’impose.", "correct": true}, {"text": "Élément de contrôle.", "correct": false}, {"text": "Élément de soutien.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Bond = Contact – Appui – Sûreté – Réserve + Accompagnement si le terrain l’impose.", "mnemo": "BOND = APPUI ; ACCOMPAGNEMENT seulement si terrain.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 58, "module": "Mouvements élémentaires", "type": "multi", "prompt": "Quelles caractéristiques correspondent au bond offensif ?", "choices": [{"text": "Il implique un emploi de la force.", "correct": true}, {"text": "Il est exécuté avec un retour sur la base de départ.", "correct": true}, {"text": "Il facilite la rupture de contact par le décrochage d’une unité.", "correct": true}, {"text": "Il peut couvrir une interpellation frontale.", "correct": true}, {"text": "Des sommations ou avertissements doivent prévenir la foule.", "correct": true}, {"text": "Il s’effectue sur 5 à 10 m maximum.", "correct": true}, {"text": "Il peut être exécuté en tout point du dispositif.", "correct": true}, {"text": "Il s’effectue sur 20 m maximum.", "correct": false}, {"text": "Il ne peut être exécuté que depuis la ligne de contact.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Bond offensif = court (5-10 m), retour base de départ, rupture de contact, possible en tout point du dispositif.", "mnemo": "BOND = 5-10 m + RETOUR + RUPTURE.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 59, "module": "Mouvements élémentaires", "type": "multi", "prompt": "Quelles caractéristiques correspondent à une vague de refoulement ?", "choices": [{"text": "Le contact peut être en ligne sur un ou plusieurs rangs.", "correct": true}, {"text": "L’évacuation par les latéraux évite l’entassement de la foule.", "correct": true}, {"text": "La progression est lente et massive afin de permettre le dialogue.", "correct": true}, {"text": "La vague se termine toujours en barrage d’arrêt fixe fermé.", "correct": true}, {"text": "Le contact ne s’occupe pas des réfractaires dépassés ; ils sont signalés à l’élément suivant.", "correct": true}, {"text": "Elle implique un emploi de la force mais pas nécessairement de sommations.", "correct": true}, {"text": "C’est une opération préventive sans emploi de la force.", "correct": false}, {"text": "Les sommations doivent toujours être effectuées.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Vague = lente/massive, dialogue, latéraux, ne pas s’attarder sur les réfractaires, fin en BAFF.", "mnemo": "VAGUE = LENTE / MASSIVE / LATÉRAUX / BAFF.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 60, "module": "Mouvements élémentaires", "type": "order", "prompt": "Remettez dans l’ordre les commandements d’une vague de refoulement.", "choices": [], "rows": [], "options": [], "order": ["Pour une vague de refoulement", "Point à atteindre", "Articulation", "Répartition des missions", "Conduite à tenir", "Rendez compte dès que prêts", "Bâtons, par la droite des boucliers, en ligne de contact", "À mon commandement ! En avant !", "Halte ! Rétablissez-vous !", "Boucliers, par la droite des bâtons, en ligne de contact"], "answer": "Séquence officielle : annonce de la vague → point → articulation → missions → CAT → prêts → bâtons → en avant → halte/rétablissement → boucliers.", "mnemo": "P-A-R-C puis PRÊT / BÂTONS / AVANT / HALTE / BOUCLIERS.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 61, "module": "Mouvements élémentaires", "type": "multi", "prompt": "Quelles caractéristiques correspondent à une charge ?", "choices": [{"text": "Elle implique un emploi de la force.", "correct": true}, {"text": "C’est une action dynamique combinant mouvement et feux.", "correct": true}, {"text": "La progression est caractérisée par percussion, masse et cohésion.", "correct": true}, {"text": "Elle est de courte durée et dépasse rarement une centaine de mètres.", "correct": true}, {"text": "Les récalcitrants dépassés ne doivent pas ralentir l’action collective.", "correct": true}, {"text": "Des barrages d’arrêt latéraux empêchent le retour de la foule sur l’axe.", "correct": true}, {"text": "Elle se termine toujours en barrage d’arrêt.", "correct": true}, {"text": "Des sommations ou avertissements préviennent la foule.", "correct": true}, {"text": "La progression est lente et massive.", "correct": false}, {"text": "Elle peut couramment se développer sur 500 m.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "Charge = action dynamique, percussion/masse/cohésion, courte, fin en barrage d’arrêt.", "mnemo": "CHARGE = PERCUSSION / MASSE / COHÉSION.", "trap": "", "priority": true, "source": "Correction officielle / MEMOP 2026"}, {"id": 62, "module": "Mouvements élémentaires", "type": "order", "prompt": "Remettez dans l’ordre les commandements d’une charge en 3 temps.", "choices": [], "rows": [], "options": [], "order": ["Pour une charge en 3 temps", "Point à atteindre", "Départ : en marchant", "Articulation en 5 éléments", "Répartition des missions", "Conduites à tenir", "Rendez compte dès que prêts", "À mon commandement ! En avant !", "Au pas de gymnastique !", "Chargez !", "Halte ! Lancez ! Rétablissez-vous !"], "answer": "Charge en 3 temps : marcher → pas de gymnastique → chargez → halte/lancez/rétablissez-vous.", "mnemo": "MARCHER → GYM → CHARGER → HALTE/LANCER/RÉTABLIR.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 63, "module": "Mouvements élémentaires", "type": "order", "prompt": "Remettez dans l’ordre les commandements d’un bond offensif.", "choices": [], "rows": [], "options": [], "order": ["Pour un bond offensif", "Départ en marchant", "Point à atteindre", "Articulation", "Répartition des missions", "Conduite(s) à tenir", "Rendez compte dès que prêts", "À mon commandement ! En avant !", "Halte ! Lancez ! « Appui », feu !", "Repli ! Rétablissez-vous !"], "answer": "Bond : départ en marchant → point → articulation → missions → CAT → prêts → avant → halte/lancez/appui feu → repli/rétablissement.", "mnemo": "", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 64, "module": "Mouvements élémentaires", "type": "multi", "prompt": "Quelles caractéristiques correspondent au barrage d’arrêt fixe fermé (BAFF) ?", "choices": [{"text": "Interdire à une foule l’accès à un espace donné pendant un temps déterminé.", "correct": true}, {"text": "Opération préventive impliquant un emploi de la force mais pas nécessairement de sommations.", "correct": true}, {"text": "Quatre éléments : contact, appui, réserve, sûreté.", "correct": true}, {"text": "Les véhicules peuvent être intégrés dans la ligne de contact face à une foule calme.", "correct": true}, {"text": "Les véhicules peuvent aussi être intégrés face à une foule hostile.", "correct": true}, {"text": "Face à une foule calme, les effectifs peuvent être allégés et les personnels équipés en léger.", "correct": true}, {"text": "Face à une foule calme, le contact avec la foule est toléré.", "correct": true}, {"text": "Laisser franchir les personnes autorisées après contrôle.", "correct": false}, {"text": "La foule doit toujours être maintenue à distance.", "correct": false}], "rows": [], "options": [], "order": [], "answer": "BAFF = interdire. « Laisser passer après contrôle » correspond au barrage filtrant.", "mnemo": "BAFF = INTERDIRE.", "trap": "APRÈS CONTRÔLE = FILTRANT.", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 65, "module": "Mouvements élémentaires", "type": "multi", "prompt": "Quelles caractéristiques correspondent au barrage d’arrêt modulaire (BAM) ?", "choices": [{"text": "Employé face à des casseurs ou manifestants mobiles et violents.", "correct": true}, {"text": "Lignes de contact constituées de cellules bouclier/bâton.", "correct": true}, {"text": "Effectifs exposés réduits au minimum.", "correct": true}, {"text": "Mesures de protection collectives et individuelles.", "correct": true}, {"text": "Véhicules intégrables pour valoriser le dispositif.", "correct": true}, {"text": "La bascule en articulation modulaire doit rester imperméable.", "correct": true}, {"text": "La linéarité du dispositif n’est plus systématiquement recherchée.", "correct": true}], "rows": [], "options": [], "order": [], "answer": "BAM = minimum d’effectif exposé + cellules + protection + véhicules + imperméabilité.", "mnemo": "BAM = MINIMUM / CELLULES / PROTECTION / VÉHICULES.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 66, "module": "Mouvements élémentaires", "type": "single", "prompt": "L’EPI est mis en place face à une foule hostile pour renseigner le commandant de peloton.", "choices": [{"text": "VRAI", "correct": false}, {"text": "FAUX", "correct": true}], "rows": [], "options": [], "order": [], "answer": "FAUX. Face à une foule calme, l’EPI est mis en place pour renseigner le commandant de barrage.", "mnemo": "EPI = FOULE CALME + COMMANDANT DE BARRAGE.", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}, {"id": 67, "module": "Mouvements élémentaires", "type": "match", "prompt": "Associez le type de barrage à sa définition.", "choices": [], "rows": [{"left": "Faire s’écouler et maintenir une foule sur un itinéraire ou la scinder et l’aiguiller.", "correct": "Canalisation"}, {"left": "Évacuer des lieux de réunion en aiguillant la foule de part et d’autre des issues.", "correct": "Tiroir / éventail"}, {"left": "Interdire l’accès à un espace pendant un temps déterminé.", "correct": "Arrêt fixe fermé"}, {"left": "Arrêter une foule calme et laisser franchir les personnes autorisées après contrôle.", "correct": "Filtrant"}], "options": ["Canalisation", "Tiroir / éventail", "Arrêt fixe fermé", "Filtrant"], "order": [], "answer": "Interdire = arrêt fixe fermé ; après contrôle = filtrant.", "mnemo": "", "trap": "", "priority": false, "source": "Correction officielle / MEMOP 2026"}];
+var REVIEW_KEY = 'astiQuizCDUCDPReviewMobileV4';
+
+function byId(id){ return document.getElementById(id); }
+
+var root = {
+  mode: byId('mode'),
+  module: byId('module'),
+  start: byId('start'),
+  availableCount: byId('availableCount'),
+  modulePill: byId('modulePill'),
+  modePill: byId('modePill'),
+  priorityPill: byId('priorityPill'),
+  counter: byId('counter'),
+  question: byId('question'),
+  help: byId('help'),
+  answers: byId('answers'),
+  validationMessage: byId('validationMessage'),
+  correction: byId('correction'),
+  expectedWrap: byId('expectedWrap'),
+  expected: byId('expected'),
+  userFeedback: byId('userFeedback'),
+  official: byId('official'),
+  partial: byId('partial'),
+  mnemo: byId('mnemo'),
+  trap: byId('trap'),
+  source: byId('source'),
+  validate: byId('validate'),
+  next: byId('next'),
+  sessionPct: byId('sessionPct'),
+  sessionFill: byId('sessionFill'),
+  goodPct: byId('goodPct'),
+  goodFill: byId('goodFill'),
+  result: byId('result'),
+  bigScore: byId('bigScore'),
+  enc: byId('enc'),
+  resultDetail: byId('resultDetail'),
+  reviewPanel: byId('reviewPanel'),
+  reviewList: byId('reviewList')
+};
+
+var session = [];
+var idx = 0;
+var current = null;
+var exactGood = 0;
+var answered = 0;
+var graded = false;
+var results = [];
+var reviewFallback = [];
+
+function copyArray(a){
+  var out=[], i;
+  for(i=0;i<a.length;i++) out.push(a[i]);
+  return out;
+}
+
+function shuffle(a){
+  var x = copyArray(a), i, j, t;
+  for(i=x.length-1;i>0;i--){
+    j=Math.floor(Math.random()*(i+1));
+    t=x[i]; x[i]=x[j]; x[j]=t;
+  }
+  return x;
+}
+
+function safeGetReview(){
+  try{
+    var v=window.localStorage ? window.localStorage.getItem(REVIEW_KEY) : null;
+    return v ? JSON.parse(v) : copyArray(reviewFallback);
+  }catch(e){
+    return copyArray(reviewFallback);
+  }
+}
+
+function safeSetReview(arr){
+  reviewFallback=copyArray(arr);
+  try{
+    if(window.localStorage) window.localStorage.setItem(REVIEW_KEY, JSON.stringify(arr));
+  }catch(e){}
+}
+
+function contains(arr, value){
+  var i;
+  for(i=0;i<arr.length;i++) if(arr[i]===value) return true;
+  return false;
+}
+
+function addReview(id){
+  var a=safeGetReview();
+  if(!contains(a,id)){ a.push(id); safeSetReview(a); }
+}
+
+function removeReview(id){
+  var a=safeGetReview(), out=[], i;
+  for(i=0;i<a.length;i++) if(a[i]!==id) out.push(a[i]);
+  safeSetReview(out);
+}
+
+function pool(){
+  var out=[], i, q, saved, j, found;
+  if(root.module.value==='review'){
+    saved=safeGetReview();
+    for(i=0;i<DATA.length;i++){
+      if(contains(saved, DATA[i].id)) out.push(DATA[i]);
+    }
+    return out;
+  }
+  for(i=0;i<DATA.length;i++){
+    q=DATA[i];
+    if(root.module.value==='all' || q.module===root.module.value) out.push(q);
+  }
+  return out;
+}
+
+
+function updateAvailableCount(){
+  var p=pool();
+  root.availableCount.innerHTML=p.length+' question'+(p.length>1?'s':'');
+}
+
+function startSession(){
+  var p=shuffle(pool());
+  if(!p.length){
+    root.question.innerHTML = root.module.value==='review'
+      ? 'Aucune question enregistrée dans « À revoir ».'
+      : 'Aucune question disponible.';
+    root.answers.innerHTML='';
+    return;
+  }
+  session = p;
+  idx=0; exactGood=0; answered=0; results=[]; current=null; graded=false;
+
+  root.result.className='result';
+  root.reviewPanel.className='reviewPanel';
+  root.reviewList.innerHTML='';
+  showQuestion();
+}
+
+function clearNode(el){
+  while(el.firstChild) el.removeChild(el.firstChild);
+}
+
+function showQuestion(){
+  if(idx>=session.length){ finishSession(); return; }
+
+  current=session[idx];
+  graded=false;
+
+  root.modulePill.innerHTML=current.module.toUpperCase();
+  root.modePill.innerHTML=root.mode.value==='learn' ? 'APPRENTISSAGE' : 'EXAMEN';
+  root.priorityPill.style.display=current.priority ? 'inline-block' : 'none';
+  root.counter.innerHTML=(idx+1)+' / '+session.length;
+  root.question.innerHTML=escapeHtml(current.prompt);
+
+  root.correction.className='correction';
+  root.official.innerHTML='';
+  root.expected.innerHTML='';
+  root.expectedWrap.style.display='none';
+  root.userFeedback.innerHTML='';
+  root.userFeedback.style.display='none';
+  root.partial.style.display='none';
+  root.mnemo.style.display='none';
+  root.trap.style.display='none';
+  root.source.innerHTML='';
+
+  clearNode(root.answers);
+  root.validationMessage.style.display='none';
+  root.validationMessage.innerHTML='';
+  root.validate.disabled=false;
+  root.next.disabled=true;
+
+  renderInput(current);
+  updateBars();
+}
+
+function renderInput(q){
+  var i, c, lab, inp, span, box, row, left, sel, opt, o, item, txt, n;
+
+  if(q.type==='single' || q.type==='multi'){
+    root.help.innerHTML = q.type==='multi'
+      ? 'Coche au moins une proposition, puis « Valider ». La question suivante restera bloquée tant que tu n’auras pas répondu et validé.'
+      : 'Choisis une réponse, puis « Valider ». La question suivante restera bloquée tant que tu n’auras pas répondu et validé.';
+
+    var type=q.type==='multi'?'checkbox':'radio';
+    var choices=shuffle(q.choices);
+
+    for(i=0;i<choices.length;i++){
+      c=choices[i];
+      lab=document.createElement('label');
+      lab.className='choice';
+      lab.setAttribute('data-correct', c.correct ? '1' : '0');
+      lab.setAttribute('data-text', c.text);
+
+      inp=document.createElement('input');
+      inp.type=type;
+      inp.name='qchoice';
+      inp.value=c.text;
+
+      span=document.createElement('span');
+      span.className='choiceText';
+      span.appendChild(document.createTextNode(c.text));
+
+      lab.appendChild(inp);
+      lab.appendChild(span);
+      root.answers.appendChild(lab);
+    }
+  }
+  else if(q.type==='match'){
+    root.help.innerHTML='Complète toutes les associations, puis clique sur « Valider ». La question suivante restera bloquée tant que l’exercice n’est pas complété.';
+    box=document.createElement('div');
+    box.className='matchgrid';
+
+    for(i=0;i<q.rows.length;i++){
+      row=q.rows[i];
+      var r=document.createElement('div');
+      r.className='matchrow';
+      r.setAttribute('data-correct', row.correct);
+
+      left=document.createElement('div');
+      left.appendChild(document.createTextNode(row.left));
+
+      sel=document.createElement('select');
+      opt=document.createElement('option');
+      opt.value=''; opt.appendChild(document.createTextNode('— Choisir —'));
+      sel.appendChild(opt);
+
+      for(var k=0;k<q.options.length;k++){
+        o=document.createElement('option');
+        o.value=q.options[k];
+        o.appendChild(document.createTextNode(q.options[k]));
+        sel.appendChild(o);
+      }
+
+      r.appendChild(left);
+      r.appendChild(sel);
+      box.appendChild(r);
+    }
+    root.answers.appendChild(box);
+  }
+  else if(q.type==='order'){
+    root.help.innerHTML='Attribue un numéro différent à chaque élément, puis clique sur « Valider ». Dès qu’un numéro est utilisé, il n’est plus disponible sur les autres lignes.';
+    box=document.createElement('div');
+    box.className='ordergrid';
+
+    var temp=[];
+    for(i=0;i<q.order.length;i++) temp.push({text:q.order[i],pos:i+1});
+    temp=shuffle(temp);
+
+    for(i=0;i<temp.length;i++){
+      item=temp[i];
+      var orow=document.createElement('div');
+      orow.className='orderrow';
+      orow.setAttribute('data-correct', String(item.pos));
+
+      sel=document.createElement('select');
+      opt=document.createElement('option');
+      opt.value=''; opt.appendChild(document.createTextNode('N°'));
+      sel.appendChild(opt);
+
+      for(n=1;n<=q.order.length;n++){
+        o=document.createElement('option');
+        o.value=String(n); o.appendChild(document.createTextNode(String(n)));
+        sel.appendChild(o);
+      }
+
+      // Empêche d'utiliser deux fois le même numéro dans une question d'ordre.
+      sel.onchange=refreshOrderOptions;
+
+      txt=document.createElement('div');
+      txt.appendChild(document.createTextNode(item.text));
+
+      orow.appendChild(sel);
+      orow.appendChild(txt);
+      box.appendChild(orow);
+    }
+    root.answers.appendChild(box);
+  }
+}
+
+function evaluate(q, visual){
+  var exact=true, correctUnits=0, totalUnits=0, i, should, selected, ok;
+  var labs, rows, inp, sel;
+
+  if(q.type==='single' || q.type==='multi'){
+    labs=root.answers.getElementsByClassName('choice');
+    totalUnits=labs.length;
+    for(i=0;i<labs.length;i++){
+      inp=labs[i].getElementsByTagName('input')[0];
+      should=labs[i].getAttribute('data-correct')==='1';
+      selected=inp.checked;
+      ok=(selected===should);
+      if(ok) correctUnits++; else exact=false;
+
+      if(visual){
+        inp.disabled=true;
+        if(should && selected) labs[i].className+=' correct';
+        else if(!should && selected) labs[i].className+=' wrong';
+        else if(should && !selected) labs[i].className+=' missed';
+      }
+    }
+  }
+  else if(q.type==='match'){
+    rows=root.answers.getElementsByClassName('matchrow');
+    totalUnits=rows.length;
+    for(i=0;i<rows.length;i++){
+      sel=rows[i].getElementsByTagName('select')[0];
+      ok=(sel.value===rows[i].getAttribute('data-correct'));
+      if(ok) correctUnits++; else exact=false;
+      if(visual){
+        sel.disabled=true;
+        rows[i].className += ok ? ' goodrow' : ' badrow';
+      }
+    }
+  }
+  else if(q.type==='order'){
+    rows=root.answers.getElementsByClassName('orderrow');
+    totalUnits=rows.length;
+    for(i=0;i<rows.length;i++){
+      sel=rows[i].getElementsByTagName('select')[0];
+      ok=(sel.value===rows[i].getAttribute('data-correct'));
+      if(ok) correctUnits++; else exact=false;
+      if(visual){
+        sel.disabled=true;
+        rows[i].className += ok ? ' goodrow' : ' badrow';
+      }
+    }
+  }
+
+  return {
+    exact: exact,
+    partial: totalUnits ? Math.round((correctUnits/totalUnits)*100) : 0
+  };
+}
+
+
+
+function refreshOrderOptions(){
+  var rows=root.answers.getElementsByClassName('orderrow');
+  var used=[], i, j, sel, opt, val;
+
+  // Recenser les numéros déjà choisis
+  for(i=0;i<rows.length;i++){
+    sel=rows[i].getElementsByTagName('select')[0];
+    if(sel && sel.value) used.push(sel.value);
+  }
+
+  // Désactiver dans chaque liste les numéros déjà utilisés ailleurs
+  for(i=0;i<rows.length;i++){
+    sel=rows[i].getElementsByTagName('select')[0];
+    if(!sel) continue;
+
+    for(j=0;j<sel.options.length;j++){
+      opt=sel.options[j];
+      val=opt.value;
+
+      // L'option vide reste toujours disponible
+      if(!val){
+        opt.disabled=false;
+        continue;
+      }
+
+      // Le numéro actuellement choisi dans cette ligne reste sélectionnable ici
+      if(sel.value===val){
+        opt.disabled=false;
+      }else{
+        opt.disabled=contains(used,val);
+      }
+    }
+  }
+}
+
+function hasRequiredAnswer(q){
+  var i, labs, rows, sel;
+
+  if(q.type==='single' || q.type==='multi'){
+    labs=root.answers.getElementsByClassName('choice');
+    for(i=0;i<labs.length;i++){
+      if(labs[i].getElementsByTagName('input')[0].checked) return true;
+    }
+    root.validationMessage.innerHTML='Sélectionne au moins une réponse avant de valider.';
+    root.validationMessage.style.display='block';
+    return false;
+  }
+
+  if(q.type==='match'){
+    rows=root.answers.getElementsByClassName('matchrow');
+    for(i=0;i<rows.length;i++){
+      sel=rows[i].getElementsByTagName('select')[0];
+      if(!sel.value){
+        root.validationMessage.innerHTML='Complète toutes les associations avant de valider.';
+        root.validationMessage.style.display='block';
+        return false;
+      }
+    }
+    return true;
+  }
+
+  if(q.type==='order'){
+    rows=root.answers.getElementsByClassName('orderrow');
+    var usedOrder=[];
+    for(i=0;i<rows.length;i++){
+      sel=rows[i].getElementsByTagName('select')[0];
+      if(!sel.value){
+        root.validationMessage.innerHTML='Donne une position à chaque élément avant de valider.';
+        root.validationMessage.style.display='block';
+        return false;
+      }
+      if(contains(usedOrder,sel.value)){
+        root.validationMessage.innerHTML='Chaque numéro ne peut être utilisé qu’une seule fois. Corrige l’ordre avant de valider.';
+        root.validationMessage.style.display='block';
+        return false;
+      }
+      usedOrder.push(sel.value);
+    }
+    return true;
+  }
+
+  return true;
+}
+
+function validateCurrent(){
+  if(!current || graded) return;
+  root.validationMessage.style.display='none';
+  root.validationMessage.innerHTML='';
+  if(!hasRequiredAnswer(current)) return;
+
+  var res=evaluate(current, root.mode.value==='learn');
+  graded=true;
+  answered++;
+
+  if(res.exact){
+    exactGood++;
+    removeReview(current.id);
+  }else{
+    addReview(current.id);
+  }
+
+  results.push({id:current.id, exact:res.exact, partial:res.partial, q:current});
+  updateBars();
+
+  root.validate.disabled=true;
+  root.next.disabled=false;
+
+  if(root.mode.value==='learn'){
+    showCorrection(res);
+  }else{
+    disableAllInputs();
+    root.help.innerHTML='Réponse enregistrée. La correction sera affichée à la fin du mode examen.';
+  }
+}
+
+function disableAllInputs(){
+  var els=root.answers.querySelectorAll ? root.answers.querySelectorAll('input,select') : [];
+  for(var i=0;i<els.length;i++) els[i].disabled=true;
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g,function(c){
+    var map={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'};
+    return map[c];
+  });
+}
+
+function expectedHtml(q){
+  var out='', i;
+  if(q.type==='single' || q.type==='multi'){
+    out='<ul style="margin:4px 0 0 20px;padding:0">';
+    for(i=0;i<q.choices.length;i++){
+      if(q.choices[i].correct) out+='<li>'+escapeHtml(q.choices[i].text)+'</li>';
+    }
+    out+='</ul>';
+    return out;
+  }
+  if(q.type==='match'){
+    for(i=0;i<q.rows.length;i++){
+      out+='<div style="margin:4px 0"><strong>'+escapeHtml(q.rows[i].left)+'</strong> → '+escapeHtml(q.rows[i].correct)+'</div>';
+    }
+    return out;
+  }
+  if(q.type==='order'){
+    for(i=0;i<q.order.length;i++){
+      out+='<div style="margin:4px 0"><strong>'+(i+1)+'.</strong> '+escapeHtml(q.order[i])+'</div>';
+    }
+    return out;
+  }
+  return '';
+}
+
+function userFeedbackText(q){
+  var out=[], i, labs, inp, rows, sel, left, txt;
+
+  if(q.type==='single' || q.type==='multi'){
+    labs=root.answers.getElementsByClassName('choice');
+    for(i=0;i<labs.length;i++){
+      inp=labs[i].getElementsByTagName('input')[0];
+      if(inp.checked) out.push(inp.value);
+    }
+    return out.length ? 'Ta sélection : '+out.join(' · ') : 'Tu n’avais sélectionné aucune proposition.';
+  }
+
+  if(q.type==='match'){
+    rows=root.answers.getElementsByClassName('matchrow');
+    for(i=0;i<rows.length;i++){
+      left=rows[i].children[0].textContent || rows[i].children[0].innerText;
+      sel=rows[i].getElementsByTagName('select')[0];
+      out.push(left+' → '+(sel.value || '—'));
+    }
+    return 'Tes associations : '+out.join(' | ');
+  }
+
+  if(q.type==='order'){
+    rows=root.answers.getElementsByClassName('orderrow');
+    for(i=0;i<rows.length;i++){
+      sel=rows[i].getElementsByTagName('select')[0];
+      txt=rows[i].children[1].textContent || rows[i].children[1].innerText;
+      out.push((sel.value || '—')+'. '+txt);
+    }
+    return 'Ton ordre : '+out.join(' | ');
+  }
+  return '';
+}
+
+function showCorrection(res){
+  root.correction.className='correction visible';
+  root.expectedWrap.style.display='block';
+  root.expected.innerHTML=expectedHtml(current);
+
+  root.userFeedback.style.display='block';
+  root.userFeedback.innerHTML=escapeHtml(userFeedbackText(current));
+
+  root.official.innerHTML=escapeHtml(current.answer);
+
+  root.partial.style.display='block';
+  root.partial.innerHTML=res.exact
+    ? 'Réponse exacte : 100 %.'
+    : 'Réponse non exacte · maîtrise partielle : '+res.partial+' %.';
+
+  if(current.mnemo){
+    root.mnemo.style.display='block';
+    root.mnemo.innerHTML='MÉMO : '+escapeHtml(current.mnemo);
+  }
+
+  if(current.trap){
+    root.trap.style.display='block';
+    root.trap.innerHTML='PIÈGE : '+escapeHtml(current.trap);
+  }
+
+  root.source.innerHTML='Référence : '+escapeHtml(current.source);
+}
+
+function nextQuestion(){
+  idx++;
+  showQuestion();
+}
+
+function updateBars(){
+  var p=session.length ? Math.round((answered/session.length)*100) : 0;
+  var g=session.length ? Math.round((exactGood/session.length)*100) : 0;
+
+  root.sessionPct.innerHTML=p+'%';
+  root.sessionFill.style.width=p+'%';
+  root.goodPct.innerHTML=g+'%';
+  root.goodFill.style.width=g+'%';
+}
+
+function finishSession(){
+  var pct=session.length ? Math.round((exactGood/session.length)*100) : 0;
+  var msg='';
+
+  if(pct===100) msg='Excellent ! Parcours parfait : tout est maîtrisé.';
+  else if(pct>=90) msg='Très solide ! Tu es prêt : verrouille seulement les dernières hésitations.';
+  else if(pct>=80) msg='Très bon niveau ! Reprends les quelques erreurs et tu seras très à l’aise.';
+  else if(pct>=70) msg='Bon niveau ! Les bases sont acquises ; cible maintenant les pièges.';
+  else if(pct>=60) msg='Ça progresse bien ! Une ou deux séries ciblées feront rapidement monter le score.';
+  else msg='Continue les séries courtes : la répétition va faire la différence.';
+
+  root.question.innerHTML='Session terminée';
+  root.help.innerHTML='';
+  root.answers.innerHTML='';
+  root.correction.className='correction';
+  root.validate.disabled=true;
+  root.next.disabled=true;
+  root.counter.innerHTML=session.length+' / '+session.length;
+
+  root.sessionPct.innerHTML='100%';
+  root.sessionFill.style.width='100%';
+  root.goodPct.innerHTML=pct+'%';
+  root.goodFill.style.width=pct+'%';
+
+  root.bigScore.innerHTML=exactGood+' / '+session.length+' — '+pct+' %';
+  root.enc.innerHTML=escapeHtml(msg);
+
+  var wrong=[], i;
+  for(i=0;i<results.length;i++) if(!results[i].exact) wrong.push(results[i]);
+
+  root.resultDetail.innerHTML=wrong.length+' erreur(s) sur cette série. '+safeGetReview().length+' question(s) sont actuellement mémorisées dans « À revoir ».';
+  root.result.className='result visible';
+
+  root.reviewList.innerHTML='';
+  if(wrong.length){
+    root.reviewPanel.className='reviewPanel visible';
+    for(i=0;i<wrong.length;i++){
+      var d=document.createElement('div');
+      d.className='reviewItem';
+
+      var qd=document.createElement('div');
+      qd.className='reviewQ';
+      qd.appendChild(document.createTextNode(wrong[i].q.prompt));
+
+      var ad=document.createElement('div');
+      ad.className='reviewA';
+      var txt='Correction : '+wrong[i].q.answer;
+      if(wrong[i].q.mnemo) txt+=' · Mémo : '+wrong[i].q.mnemo;
+      ad.appendChild(document.createTextNode(txt));
+
+      d.appendChild(qd);
+      d.appendChild(ad);
+      root.reviewList.appendChild(d);
+    }
+  }else{
+    root.reviewPanel.className='reviewPanel';
+  }
+}
+
+root.start.onclick=startSession;
+root.validate.onclick=validateCurrent;
+root.next.onclick=nextQuestion;
+root.mode.onchange=function(){
+  root.modePill.innerHTML=root.mode.value==='learn'?'APPRENTISSAGE':'EXAMEN';
+};
+root.module.onchange=function(){ updateAvailableCount(); };
+
+/* Initialisation mobile */
+root.start.disabled=false;
+updateAvailableCount();
+root.question.innerHTML='Choisis un mode et un module, puis touche « Nouvelle série ». Le programme utilisera automatiquement toutes les questions disponibles pour ce thème.';
+
+</script>
+</body>
+</html>
